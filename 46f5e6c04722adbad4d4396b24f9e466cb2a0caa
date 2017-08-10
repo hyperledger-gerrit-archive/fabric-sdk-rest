@@ -1,0 +1,8 @@
+Code-Review+2: Chris Poole <chrispoole@uk.ibm.com>
+Verified+1: Chris Poole <chrispoole@uk.ibm.com>
+Code-Review+2: Ian Mitchell <ianj_mitchell@uk.ibm.com>
+Submitted-by: Ian Mitchell <ianj_mitchell@uk.ibm.com>
+Submitted-at: Thu, 10 Aug 2017 16:54:22 +0000
+Reviewed-on: https://gerrit.hyperledger.org/r/12311
+Project: fabric-sdk-rest
+Branch: refs/heads/master
