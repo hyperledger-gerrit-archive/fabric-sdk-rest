@@ -1,0 +1,7 @@
+Code-Review+2: Martin Cocks <cocksmar@uk.ibm.com>
+Verified+1: Martin Cocks <cocksmar@uk.ibm.com>
+Submitted-by: Martin Cocks <cocksmar@uk.ibm.com>
+Submitted-at: Mon, 14 Aug 2017 10:48:31 +0000
+Reviewed-on: https://gerrit.hyperledger.org/r/12409
+Project: fabric-sdk-rest
+Branch: refs/heads/master
