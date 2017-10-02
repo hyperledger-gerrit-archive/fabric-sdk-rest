@@ -12,21 +12,37 @@ var http = require('http');
 var https = require('https');
 const argv = require('yargs').argv;
 
+var session = require('express-session');
+var loopbackPassport = require('loopback-component-passport');
+var PassportConfigurator = loopbackPassport.PassportConfigurator;
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 var passport = require('passport');
 var Strategy = require('passport-http').BasicStrategy;
 var db = require('./db');
 
 var app = module.exports = loopback();
+var passportConfigurator = new PassportConfigurator(app);
 
-passport.use(new Strategy(
-  function(username, password, cb) {
-    db.users.findByUsername(username, function(err, user) {
-      if (err) { return cb(err); }
-      if (!user) { return cb(null, false); }
-      if (user.password != password) { return cb(null, false); }
-      return cb(null, user);
-    });
-  }));
+// Read providers.json file if it exists, or revert to HTTP basic auth
+var passportConfig = {};
+try {
+  passportConfig = require('./providers.json');
+} catch (err) {
+  passport.use(new Strategy(
+    function(username, password, cb) {
+      db.users.findByUsername(username, function(err, user) {
+        if (err) { return cb(err); }
+        if (!user) { return cb(null, false); }
+        if (user.password != password) { return cb(null, false); }
+        return cb(null, user);
+      });
+    }));
+  var router = app.loopback.Router();
+  router.get('/', app.loopback.status());
+  app.use(passport.authenticate('basic', { session: false }),
+          router);
+}
 
 var useHttps = argv.https || argv.s;
 if (useHttps) {
@@ -34,6 +50,41 @@ if (useHttps) {
 }
 
 app.start = function(httpOnly) {
+
+  // Parse JSON-encoded bodies, or URL-encoded bodies
+  app.middleware('parse', bodyParser.json());
+  app.middleware('parse', bodyParser.urlencoded({
+    extended: true,
+  }));
+
+  app.middleware('auth', loopback.token({
+    model: app.models.accessToken,
+  }));
+
+  app.middleware('session:before', cookieParser(app.get('cookieSecret')));
+  app.middleware('session', session({
+    secret: 'kitty',
+    saveUninitialized: true,
+    resave: true,
+  }));
+  passportConfigurator.init();
+
+  passportConfigurator.setupModels({
+    userModel: app.models.user,
+    userIdentityModel: app.models.userIdentity,
+    userCredentialModel: app.models.userCredential,
+  });
+  for (var s in passportConfig) {
+    var c = passportConfig[s];
+    c.session = c.session !== false;
+    passportConfigurator.configureProvider(s, c);
+  }
+  var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
+
+  app.get('/auth/logout', function(req, res, next) {
+    req.logout();
+  });
+  
   if (httpOnly === undefined) {
     httpOnly = process.env.HTTP;
   }
@@ -69,7 +120,6 @@ app.start = function(httpOnly) {
 };
 
 // Bootstrap the application, configure models, datasources and middleware.
-// Sub-apps like REST API are mounted via boot scripts.
 boot(app, __dirname, function(err) {
   if (err) throw err;
 
