@@ -11,7 +11,24 @@
   "properties": {},
   "validations": [],
   "relations": {},
-  "acls": [],
+  "acls": [{
+            "accessType": "*",
+            "permission": "ALLOW",
+            "principalId": "admin",
+            "principalType": "ROLE"
+  },
+{
+            "accessType": "READ",
+            "permission": "ALLOW",
+            "principalId": "admin",
+            "principalType": "ROLE"
+        },           
+        {
+            "accessType": "*",
+            "permission": "DENY",
+            "principalId": "user",
+            "principalType": "ROLE"
+        }],
   "methods": {},
   "hidden": ["id"]
 }
