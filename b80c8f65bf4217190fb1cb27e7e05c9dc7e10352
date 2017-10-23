@@ -1,0 +1,7 @@
+Code-Review+2: Martin Cocks <cocksmar@uk.ibm.com>
+Verified+1: Chris Poole <chrispoole@uk.ibm.com>
+Submitted-by: Chris Poole <chrispoole@uk.ibm.com>
+Submitted-at: Mon, 23 Oct 2017 09:07:23 +0000
+Reviewed-on: https://gerrit.hyperledger.org/r/14067
+Project: fabric-sdk-rest
+Branch: refs/heads/dev
