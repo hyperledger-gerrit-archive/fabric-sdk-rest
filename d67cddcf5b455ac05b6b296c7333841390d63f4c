@@ -1,0 +1,7 @@
+Verified+1: Hyperledger Jobbuilder <jobbuilder@jenkins.hyperledger.org>
+Code-Review+2: Martin Cocks <cocksmar@uk.ibm.com>
+Submitted-by: Martin Cocks <cocksmar@uk.ibm.com>
+Submitted-at: Thu, 26 Oct 2017 07:16:52 +0000
+Reviewed-on: https://gerrit.hyperledger.org/r/14847
+Project: fabric-sdk-rest
+Branch: refs/heads/dev
