@@ -1,0 +1,7 @@
+Verified+1: Hyperledger Jobbuilder <jobbuilder@jenkins.hyperledger.org>
+Code-Review+2: Chris Poole <chrispoole@uk.ibm.com>
+Submitted-by: Chris Poole <chrispoole@uk.ibm.com>
+Submitted-at: Tue, 21 Nov 2017 13:07:22 +0000
+Reviewed-on: https://gerrit.hyperledger.org/r/15627
+Project: fabric-sdk-rest
+Branch: refs/heads/dev
