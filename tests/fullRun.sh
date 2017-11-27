@@ -102,6 +102,38 @@ fi
 #
 
 
+#
+# Switch the REST SDK server from no auth to LDAP authentication
+#
+
+
+# Stop the REST server
+printf "Switching REST SDK server to use LDAP authentication\n"
+printf "Stopping REST SDK server, PID: ${rest_server_pid}\n"
+kill -2 ${rest_server_pid}
+printf "Wait 3 seconds to allow REST server to stop\n"
+sleep 3
+
+cd "${server_dir}"
+
+providers_file="server/providers.json"
+
+# Ensure the providers file exists, and not just the template
+if [[ ! -f "$providers_file" ]]; then
+    printf "Creating providers file from template for LDAP auth\n"
+    cp "${providers_file}.template" "$providers_file"
+fi
+
+# Start the REST server in it's own process with tls and debug on
+node . --hfc-logging "{\"info\":\"${tests_dir}/logs/fullRun_$(date +%s).log\",\"debug\":\"${tests_dir}/logs/fullRun_$(date +%s).log\"}" &
+# Save server's process id
+rest_server_pid=$!
+printf "Starting REST server with LDAP authentication configured, PID: ${rest_server_pid}\n"
+printf "Wait 5 seconds to allow REST server to start up\n"
+sleep 5
+
+cd "${tests_dir}"
+
 # Set up NODE_PATH to be able to start ldap server and run auth tests
 export NODE_PATH=../packages/fabric-rest/node_modules
 ./test_authentication.sh
@@ -110,6 +142,15 @@ if [[ $? -eq 0 ]]; then # Error response was found
 else
   result_test3="FAILED"
 fi
+
+
+# Remove the providers file if it exists
+cd "${server_dir}"
+if [[ -f "$providers_file" ]]; then
+    printf "Removing providers file\n"
+    rm "$providers_file"
+fi
+cd "${tests_dir}"
 
 
 #
